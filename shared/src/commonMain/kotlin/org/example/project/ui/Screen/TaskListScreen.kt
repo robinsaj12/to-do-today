@@ -15,7 +15,12 @@ import androidx.compose.ui.unit.dp
 import org.example.project.presentation.event.TaskEvent
 import org.example.project.presentation.viewmodel.TaskViewModel
 import org.example.project.ui.component.EmptyState
+import org.example.project.ui.component.SearchBar
 import org.example.project.ui.component.TaskItem
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import org.example.project.ui.component.FilterMenu
+import org.example.project.ui.component.SortMenu
 
 @Composable
 fun TaskListScreen(
@@ -27,6 +32,7 @@ fun TaskListScreen(
 
     Scaffold(
 
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddTaskClick
@@ -37,6 +43,7 @@ fun TaskListScreen(
             }
         }
 
+
     ) { paddingValues ->
 
         if (state.tasks.isEmpty()) {
@@ -44,6 +51,37 @@ fun TaskListScreen(
             EmptyState()
 
         } else {
+            SearchBar(
+                query = state.searchQuery,
+                onQueryChange = {
+                    viewModel.onEvent(
+                        TaskEvent.SearchChanged(it)
+                    )
+                }
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                FilterMenu(
+                    selected = state.selectedFilter,
+                    onSelected = {
+                        viewModel.onEvent(
+                            TaskEvent.FilterChanged(it)
+                        )
+                    }
+                )
+
+                SortMenu(
+                    selected = state.selectedSort,
+                    onSelected = {
+                        viewModel.onEvent(
+                            TaskEvent.SortChanged(it)
+                        )
+                    }
+                )
+            }
 
             LazyColumn(
                 modifier = Modifier

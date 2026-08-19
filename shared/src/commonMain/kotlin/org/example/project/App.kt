@@ -23,17 +23,19 @@ import to_do_today.shared.generated.resources.compose_multiplatform
 
 import org.example.project.data.repository.FakeTaskRepository
 import org.example.project.presentation.viewmodel.TaskViewModel
+import org.example.project.theme.TodoTheme
 
 @Composable
 fun App() {
 
     val viewModel = remember {
         TaskViewModel(
-            repository = FakeTaskRepository()
+            FakeTaskRepository()
         )
     }
 
-    MaterialTheme {
+    TodoTheme {
+
         TaskListScreen(
             viewModel = viewModel,
             onAddTaskClick = {}

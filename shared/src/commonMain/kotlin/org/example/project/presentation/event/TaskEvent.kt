@@ -2,6 +2,8 @@ package org.example.project.presentation.event
 
 import org.example.project.data.model.Priority
 import org.example.project.data.model.Task
+import org.example.project.data.model.TaskFilter
+import org.example.project.data.model.TaskSort
 
 sealed interface TaskEvent {
 
@@ -31,5 +33,24 @@ sealed interface TaskEvent {
 
     data class PriorityChanged(
         val priority: Priority
+    ) : TaskEvent
+
+    data object SaveTask : TaskEvent
+
+    data object ClearForm : TaskEvent
+    data class SearchChanged(
+        val query: String
+    ) : TaskEvent
+
+    data class FilterChanged(
+        val filter: TaskFilter
+    ) : TaskEvent
+
+    data class SortChanged(
+        val sort: TaskSort
+    ) : TaskEvent
+
+    data class SelectTask(
+        val task: Task
     ) : TaskEvent
 }

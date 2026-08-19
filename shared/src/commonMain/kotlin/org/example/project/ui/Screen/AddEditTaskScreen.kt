@@ -48,7 +48,13 @@ fun AddEditTaskScreen(
             )
 
             Button(
-                onClick = onSaveClick,
+                onClick = {
+                    viewModel.onEvent(
+                        TaskEvent.SaveTask
+                    )
+
+                    onSaveClick()
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Save Task")
