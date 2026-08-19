@@ -53,4 +53,5 @@ sealed interface TaskEvent {
     data class SelectTask(
         val task: Task
     ) : TaskEvent
+    data object ResetSelectedTask : TaskEvent
 }

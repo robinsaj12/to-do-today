@@ -11,6 +11,8 @@ plugins {
 
     // REMOVE THIS FOR NOW
     // alias(libs.plugins.room)
+    // Kotlin serialization plugin for type safe routes and navigation arguments
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 kotlin {
@@ -60,6 +62,11 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+//            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8")
+            val nav_version = "2.9.8"
+
+            // Jetpack Compose integration
+            implementation("androidx.navigation:navigation-compose:$nav_version")
         }
 
         commonTest.dependencies {

@@ -160,33 +160,6 @@ class TaskViewModel(
                 )
             }
 
-            is TaskEvent.SaveTask -> {
-
-                val currentState = _uiState.value
-
-                if (currentState.title.isBlank()) {
-                    return
-                }
-
-                viewModelScope.launch {
-
-                    repository.insertTask(
-                        Task(
-                            title = currentState.title,
-                            description = currentState.description,
-                            priority = currentState.priority
-                        )
-                    )
-
-                    _uiState.update {
-                        it.copy(
-                            title = "",
-                            description = "",
-                            priority = Priority.MEDIUM
-                        )
-                    }
-                }
-            }
 
             is TaskEvent.ClearForm -> {
 
@@ -225,14 +198,60 @@ class TaskViewModel(
                 }
             }
 
-            is TaskEvent.SelectTask -> {
+
+            is TaskEvent.SaveTask -> {
+
+                val currentState = _uiState.value
+
+                if (currentState.title.isBlank()) {
+                    return
+                }
+
+                viewModelScope.launch {
+
+                    if (currentState.isEditMode) {
+
+                        repository.updateTask(
+                            Task(
+                                id = currentState.selectedTaskId ?: 0,
+                                title = currentState.title,
+                                description = currentState.description,
+                                priority = currentState.priority,
+                                isCompleted = false
+                            )
+                        )
+
+                    } else {
+
+                        repository.insertTask(
+                            Task(
+                                title = currentState.title,
+                                description = currentState.description,
+                                priority = currentState.priority
+                            )
+                        )
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            selectedTaskId = null,
+                            title = "",
+                            description = "",
+                            priority = Priority.MEDIUM,
+                            isEditMode = false
+                        )
+                    }
+                }
+            }
+            is TaskEvent.ResetSelectedTask -> {
 
                 _uiState.update {
                     it.copy(
-                        selectedTaskId = event.task.id,
-                        title = event.task.title,
-                        description = event.task.description,
-                        priority = event.task.priority
+                        selectedTaskId = null,
+                        title = "",
+                        description = "",
+                        priority = Priority.MEDIUM,
+                        isEditMode = false
                     )
                 }
             }

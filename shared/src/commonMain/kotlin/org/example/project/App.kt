@@ -24,6 +24,7 @@ import to_do_today.shared.generated.resources.compose_multiplatform
 import org.example.project.data.repository.FakeTaskRepository
 import org.example.project.presentation.viewmodel.TaskViewModel
 import org.example.project.theme.TodoTheme
+import org.example.project.ui.navigation.AppNavigation
 
 @Composable
 fun App() {
@@ -36,9 +37,8 @@ fun App() {
 
     TodoTheme {
 
-        TaskListScreen(
-            viewModel = viewModel,
-            onAddTaskClick = {}
+        AppNavigation(
+            viewModel = viewModel
         )
     }
 }
