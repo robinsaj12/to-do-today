@@ -3,25 +3,26 @@ package org.example.project.ui.component
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
+import org.example.project.data.model.TaskFilter
 
 @Composable
 fun FilterMenu(
-    filters: List<String>,
-    selected: String,
-    onSelected: (String) -> Unit
+    selected: TaskFilter,
+    onSelected: (TaskFilter) -> Unit
 ) {
 
     var expanded by remember {
         mutableStateOf(false)
     }
 
-    androidx.compose.material3.TextButton(
+    TextButton(
         onClick = {
             expanded = true
         }
     ) {
-        Text(selected)
+        Text(selected.name)
     }
 
     DropdownMenu(
@@ -31,11 +32,11 @@ fun FilterMenu(
         }
     ) {
 
-        filters.forEach { filter ->
+        TaskFilter.entries.forEach { filter ->
 
             DropdownMenuItem(
                 text = {
-                    Text(filter)
+                    Text(filter.name)
                 },
                 onClick = {
                     expanded = false

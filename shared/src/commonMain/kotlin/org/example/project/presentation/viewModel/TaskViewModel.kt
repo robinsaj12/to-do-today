@@ -11,10 +11,88 @@ import org.example.project.data.repository.TaskRepository
 import org.example.project.presentation.event.TaskEvent
 import org.example.project.presentation.state.TaskUiState
 import org.example.project.data.model.Task
+import org.example.project.data.model.TaskFilter
 
 class TaskViewModel(
     private val repository: TaskRepository
 ) : ViewModel() {
+
+    private fun applyFilters(
+        tasks: List<Task>,
+        query: String,
+        filter: TaskFilter
+    ): List<Task> {
+
+        var result = tasks
+
+        if (query.isNotBlank()) {
+
+            result = result.filter {
+
+                it.title.contains(
+                    query,
+                    ignoreCase = true
+                ) ||
+
+                        it.description.contains(
+                            query,
+                            ignoreCase = true
+                        )
+            }
+        }
+
+        result = when (filter) {
+
+            TaskFilter.ALL -> result
+
+            TaskFilter.COMPLETED ->
+                result.filter { it.isCompleted }
+
+            TaskFilter.PENDING ->
+                result.filter { !it.isCompleted }
+
+            TaskFilter.HIGH ->
+                result.filter {
+                    it.priority.name == "HIGH"
+                }
+
+            TaskFilter.MEDIUM ->
+                result.filter {
+                    it.priority.name == "MEDIUM"
+                }
+
+            TaskFilter.LOW ->
+                result.filter {
+                    it.priority.name == "LOW"
+                }
+        }
+
+        return result
+    }
+
+    private var allTasks: List<Task> = emptyList()
+
+    private fun filterTasks(
+        tasks: List<Task>,
+        query: String
+    ): List<Task> {
+
+        if (query.isBlank()) {
+            return tasks
+        }
+
+        return tasks.filter {
+
+            it.title.contains(
+                query,
+                ignoreCase = true
+            ) ||
+                    it.description.contains(
+                        query,
+                        ignoreCase = true
+                    )
+        }
+    }
 
     private val _uiState = MutableStateFlow(
         TaskUiState(isLoading = true)
@@ -27,21 +105,46 @@ class TaskViewModel(
         observeTasks()
     }
 
-    private fun observeTasks() {
+//    private fun observeTasks() {
+//
+//        viewModelScope.launch {
+//
+//            repository.getAllTasks().collect { tasks ->
+//
+//                _uiState.update {
+//                    it.copy(
+//                        tasks = filterTasks(
+//                            tasks,
+//                            _uiState.value.searchQuery
+//                        ),
+//                        isLoading = false
+//                    )
+//                }
+//            }
+//        }
+//    }
+    //Fix
+private fun observeTasks() {
 
-        viewModelScope.launch {
+    viewModelScope.launch {
 
-            repository.getAllTasks().collect { tasks ->
+        repository.getAllTasks().collect { tasks ->
 
-                _uiState.update {
-                    it.copy(
-                        tasks = tasks,
-                        isLoading = false
-                    )
-                }
+            allTasks = tasks
+
+            _uiState.update {
+                it.copy(
+                    tasks = applyFilters(
+                        tasks,
+                        it.searchQuery,
+                        it.selectedFilter
+                    ),
+                    isLoading = false
+                )
             }
         }
     }
+}
 
     fun onEvent(event: TaskEvent) {
 
@@ -149,6 +252,33 @@ class TaskViewModel(
                     }
                 }
             }
+            is TaskEvent.SearchChanged -> {
+
+                _uiState.update {
+                    it.copy(
+                        searchQuery = event.query,
+                        tasks = applyFilters(
+                            allTasks,
+                            event.query,
+                            it.selectedFilter
+                        )
+                    )
+                }
+            }
+            is TaskEvent.FilterChanged -> {
+
+                _uiState.update {
+                    it.copy(
+                        selectedFilter = event.filter,
+                        tasks = applyFilters(
+                            allTasks,
+                            it.searchQuery,
+                            event.filter
+                        )
+                    )
+                }
+            }
+
         }
     }
 }

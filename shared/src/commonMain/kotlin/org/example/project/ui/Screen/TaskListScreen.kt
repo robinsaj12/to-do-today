@@ -1,10 +1,14 @@
 package org.example.project.ui.screen
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Scaffold
@@ -17,7 +21,9 @@ import androidx.compose.ui.unit.dp
 import org.example.project.presentation.event.TaskEvent
 import org.example.project.presentation.viewmodel.TaskViewModel
 import org.example.project.ui.component.EmptyState
+import org.example.project.ui.component.SearchBar
 import org.example.project.ui.component.TaskItem
+import org.example.project.ui.component.FilterMenu
 
 @Composable
 fun TaskListScreen(
@@ -37,52 +43,75 @@ fun TaskListScreen(
         }
     ) { paddingValues ->
 
-        if (state.tasks.isEmpty()) {
 
-            EmptyState()
-
-        } else {
-
-            LazyColumn(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
-                contentPadding = PaddingValues(16.dp)
-            ) {
+                    .padding(paddingValues)
+            ){
+                SearchBar(
+                    query = state.searchQuery,
+                    onQueryChange = {
+                        viewModel.onEvent(
+                            TaskEvent.SearchChanged(it)
+                        )
+                    }
+                )
+                FilterMenu(
+                    selected = state.selectedFilter,
+                    onSelected = {
+                        viewModel.onEvent(
+                            TaskEvent.FilterChanged(it)
+                        )
+                    }
+                )
+                if (state.tasks.isEmpty()) {
 
-                items(
-                    items = state.tasks,
-                    key = { it.id }
-                ) { task ->
+                    EmptyState()
 
-                    TaskItem(
-                        task = task,
+                } else {
 
-                        onClick = {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp),
+                        contentPadding = PaddingValues(16.dp)
+                    ) {
 
-                            viewModel.onEvent(
-                                TaskEvent.SelectTask(task)
+                        items(
+                            items = state.tasks,
+                            key = { it.id }
+                        ) { task ->
+
+                            TaskItem(
+                                task = task,
+
+                                onClick = {
+
+                                    viewModel.onEvent(
+                                        TaskEvent.SelectTask(task)
+                                    )
+
+                                    onAddTaskClick()
+                                },
+
+                                onToggleComplete = {
+                                    viewModel.onEvent(
+                                        TaskEvent.ToggleComplete(task)
+                                    )
+                                },
+
+                                onDelete = {
+                                    viewModel.onEvent(
+                                        TaskEvent.DeleteTask(task)
+                                    )
+                                }
                             )
 
-                            onAddTaskClick()
-                        },
-
-                        onToggleComplete = {
-                            viewModel.onEvent(
-                                TaskEvent.ToggleComplete(task)
-                            )
-                        },
-
-                        onDelete = {
-                            viewModel.onEvent(
-                                TaskEvent.DeleteTask(task)
-                            )
+                            Divider()
                         }
-                    )
+                    }
 
-                    Divider()
-                }
-            }
-        }
-    }
+                }}            }
+
 }
