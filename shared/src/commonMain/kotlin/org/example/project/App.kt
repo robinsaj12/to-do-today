@@ -1,44 +1,109 @@
 package org.example.project
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.example.project.ui.screen.TaskListScreen
-import org.jetbrains.compose.resources.painterResource
-
-import to_do_today.shared.generated.resources.Res
-import to_do_today.shared.generated.resources.compose_multiplatform
-
-
-import org.example.project.data.repository.FakeTaskRepository
+import org.example.project.data.model.Task
+import org.example.project.presentation.event.TaskEvent
 import org.example.project.presentation.viewmodel.TaskViewModel
 import org.example.project.theme.TodoTheme
-import org.example.project.ui.navigation.AppNavigation
+import org.example.project.ui.screen.AddEditTaskScreen
+import org.example.project.ui.screen.TaskListScreen
+
+private enum class Screen {
+    LIST,
+    ADD
+}
 
 @Composable
-fun App() {
+fun App(
+    viewModel: TaskViewModel
+) {
 
-    val viewModel = remember {
-        TaskViewModel(
-            FakeTaskRepository()
-        )
+    var currentScreen by remember {
+        mutableStateOf(Screen.LIST)
     }
+
+    val uiState by viewModel.uiState.collectAsState()
 
     TodoTheme {
 
-        AppNavigation(
-            viewModel = viewModel
-        )
+        when (currentScreen) {
+
+            Screen.LIST -> {
+
+                TaskListScreen(
+                    viewModel = viewModel,
+                    onAddTaskClick = {
+                        currentScreen = Screen.ADD
+                    }
+                )
+            }
+
+            Screen.ADD -> {
+
+                AddEditTaskScreen(
+                    title = uiState.title,
+                    description = uiState.description,
+                    priority = uiState.priority,
+
+                    onTitleChange = {
+                        viewModel.onEvent(
+                            TaskEvent.TitleChanged(it)
+                        )
+                    },
+
+                    onDescriptionChange = {
+                        viewModel.onEvent(
+                            TaskEvent.DescriptionChanged(it)
+                        )
+                    },
+
+                    onPrioritySelected = {
+                        viewModel.onEvent(
+                            TaskEvent.PriorityChanged(it)
+                        )
+                    },
+
+                    onSaveClick = {
+
+                        val task = Task(
+                            title = uiState.title,
+                            description = uiState.description,
+                            priority = uiState.priority
+                        )
+
+                        viewModel.onEvent(
+                            TaskEvent.AddTask(task)
+                        )
+
+                        currentScreen = Screen.LIST
+                    }
+                )
+            }
+        }
     }
 }
+
+//
+//
+//package org.example.project
+//
+//import androidx.compose.runtime.Composable
+//import org.example.project.presentation.viewmodel.TaskViewModel
+//import org.example.project.theme.TodoTheme
+//import org.example.project.ui.screen.TaskListScreen
+//
+//@Composable
+//fun App(
+//    viewModel: TaskViewModel
+//) {
+//
+//    TodoTheme {
+//
+//        TaskListScreen(
+//            viewModel = viewModel,
+//            onAddTaskClick = {
+//                println("FAB Clicked")
+//            }
+//        )
+//    }
+//}

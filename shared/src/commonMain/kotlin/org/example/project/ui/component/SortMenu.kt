@@ -1,50 +1,47 @@
 package org.example.project.ui.component
 
-import androidx.compose.material3.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import org.example.project.data.model.TaskSort
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SortMenu(
-    selected: TaskSort,
-    onSelected: (TaskSort) -> Unit
+    sorts: List<String>,
+    selected: String,
+    onSelected: (String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    androidx.compose.material3.TextButton(
+        onClick = {
+            expanded = true
+        }
+    ) {
+        Text(selected)
+    }
+
+    DropdownMenu(
         expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
+        onDismissRequest = {
+            expanded = false
         }
     ) {
 
-        OutlinedTextField(
-            value = selected.name,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Sort") }
-        )
+        sorts.forEach { sort ->
 
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-
-            TaskSort.entries.forEach { sort ->
-
-                DropdownMenuItem(
-                    text = {
-                        Text(sort.name)
-                    },
-                    onClick = {
-                        expanded = false
-                        onSelected(sort)
-                    }
-                )
-            }
+            DropdownMenuItem(
+                text = {
+                    Text(sort)
+                },
+                onClick = {
+                    expanded = false
+                    onSelected(sort)
+                }
+            )
         }
     }
 }

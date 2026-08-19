@@ -1,5 +1,3 @@
-
-
 package org.example.project.ui.navigation
 
 sealed class Screen(

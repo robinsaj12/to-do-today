@@ -1,17 +1,23 @@
 package org.example.project.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.example.project.data.model.Priority
+import org.example.project.data.repository.FakeTaskRepository
 import org.example.project.presentation.viewmodel.TaskViewModel
 import org.example.project.ui.screen.AddEditTaskScreen
 import org.example.project.ui.screen.TaskListScreen
 
 @Composable
-fun AppNavigation(
-    viewModel: TaskViewModel
-) {
+fun AppNavigation() {
+    val viewModel = remember {
+        TaskViewModel(
+            repository = FakeTaskRepository()
+        )
+    }
 
     val navController = rememberNavController()
 
@@ -24,8 +30,7 @@ fun AppNavigation(
             route = Screen.TaskList.route
         ) {
 
-            TaskListScreen(
-                viewModel = viewModel,
+            TaskListScreen(viewModel=viewModel,
                 onAddTaskClick = {
                     navController.navigate(
                         Screen.AddEditTask.route
@@ -39,7 +44,12 @@ fun AppNavigation(
         ) {
 
             AddEditTaskScreen(
-                viewModel = viewModel,
+                title = "",
+                description = "",
+                priority = Priority.MEDIUM,
+                onTitleChange = {},
+                onDescriptionChange = {},
+                onPrioritySelected = {},
                 onSaveClick = {
                     navController.popBackStack()
                 }
@@ -47,5 +57,3 @@ fun AppNavigation(
         }
     }
 }
-
-

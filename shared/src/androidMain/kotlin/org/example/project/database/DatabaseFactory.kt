@@ -5,7 +5,10 @@ import androidx.room.Room
 
 object DatabaseFactory {
 
-    fun create(context: Context): TodoDatabase {
+    fun create(
+        context: Context
+    ): TodoDatabase {
+
         return Room.databaseBuilder(
             context,
             TodoDatabase::class.java,

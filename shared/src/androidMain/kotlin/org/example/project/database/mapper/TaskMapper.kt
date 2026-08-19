@@ -5,6 +5,7 @@ import org.example.project.data.model.Task
 import org.example.project.database.entity.TaskEntity
 
 fun TaskEntity.toTask(): Task {
+
     return Task(
         id = id,
         title = title,
@@ -16,6 +17,7 @@ fun TaskEntity.toTask(): Task {
 }
 
 fun Task.toEntity(): TaskEntity {
+
     return TaskEntity(
         id = id,
         title = title,

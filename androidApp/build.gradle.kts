@@ -18,7 +18,15 @@ kotlin {
 dependencies {
     implementation(project(":shared"))
 
+//    implementation(libs.androidx.activity.compose)
+
+    implementation(project(":shared"))
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+
     implementation(libs.androidx.activity.compose)
+
 
     debugImplementation(compose.uiTooling)
 }

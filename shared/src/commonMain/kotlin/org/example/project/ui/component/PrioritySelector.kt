@@ -2,15 +2,13 @@ package org.example.project.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import org.example.project.data.model.Priority
 
 @Composable
 fun PrioritySelector(
-    selected: Priority,
+    selectedPriority: Priority,
     onPrioritySelected: (Priority) -> Unit
 ) {
 
@@ -20,13 +18,15 @@ fun PrioritySelector(
 
         Priority.entries.forEach { priority ->
 
-            FilterChip(
-                selected = selected == priority,
+            androidx.compose.material3.FilterChip(
+                selected = selectedPriority == priority,
                 onClick = {
                     onPrioritySelected(priority)
                 },
                 label = {
-                    Text(priority.name)
+                    androidx.compose.material3.Text(
+                        priority.name
+                    )
                 }
             )
         }

@@ -1,62 +1,66 @@
 package org.example.project.ui.screen
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.example.project.presentation.event.TaskEvent
-import org.example.project.presentation.viewmodel.TaskViewModel
+import org.example.project.data.model.Priority
 import org.example.project.ui.component.TaskForm
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditTaskScreen(
-    viewModel: TaskViewModel,
+    title: String,
+    description: String,
+    priority: Priority,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onPrioritySelected: (Priority) -> Unit,
     onSaveClick: () -> Unit
 ) {
 
-    val state by viewModel.uiState.collectAsState()
-
-    Scaffold {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Add Task")
+                }
+            )
+        }
+    ) { paddingValues: PaddingValues ->
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
             TaskForm(
-                title = state.title,
-                description = state.description,
-                priority = state.priority,
-                onTitleChanged = {
-                    viewModel.onEvent(
-                        TaskEvent.TitleChanged(it)
-                    )
-                },
-                onDescriptionChanged = {
-                    viewModel.onEvent(
-                        TaskEvent.DescriptionChanged(it)
-                    )
-                },
-                onPriorityChanged = {
-                    viewModel.onEvent(
-                        TaskEvent.PriorityChanged(it)
-                    )
-                }
+                title = title,
+                description = description,
+                selectedPriority = priority,
+                onTitleChange = onTitleChange,
+                onDescriptionChange = onDescriptionChange,
+                onPrioritySelected = onPrioritySelected
             )
 
             Button(
-                onClick = {
-                    viewModel.onEvent(
-                        TaskEvent.SaveTask
-                    )
-
-                    onSaveClick()
-                },
+                onClick = onSaveClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
+
                 Text("Save Task")
             }
         }

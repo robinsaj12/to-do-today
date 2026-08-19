@@ -13,20 +13,38 @@ class TaskRepositoryImpl(
 ) : TaskRepository {
 
     override fun getAllTasks(): Flow<List<Task>> {
-        return taskDao.getAllTasks().map { entities ->
-            entities.map { it.toTask() }
-        }
+
+        return taskDao
+            .getAllTasks()
+            .map { entityList ->
+
+                entityList.map {
+                    it.toTask()
+                }
+            }
     }
 
-    override suspend fun insertTask(task: Task) {
-        taskDao.insertTask(task.toEntity())
+    override suspend fun insertTask(
+        task: Task
+    ) {
+        taskDao.insertTask(
+            task.toEntity()
+        )
     }
 
-    override suspend fun updateTask(task: Task) {
-        taskDao.updateTask(task.toEntity())
+    override suspend fun updateTask(
+        task: Task
+    ) {
+        taskDao.updateTask(
+            task.toEntity()
+        )
     }
 
-    override suspend fun deleteTask(task: Task) {
-        taskDao.deleteTask(task.toEntity())
+    override suspend fun deleteTask(
+        task: Task
+    ) {
+        taskDao.deleteTask(
+            task.toEntity()
+        )
     }
 }

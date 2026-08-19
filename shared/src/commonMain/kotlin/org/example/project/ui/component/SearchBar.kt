@@ -11,13 +11,13 @@ fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit
 ) {
-
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
+        modifier = Modifier.fillMaxWidth(),
         label = {
             Text("Search Tasks")
         },
-        modifier = Modifier.fillMaxWidth()
+        singleLine = true
     )
 }

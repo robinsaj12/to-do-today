@@ -1,50 +1,47 @@
 package org.example.project.ui.component
 
-import androidx.compose.material3.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import org.example.project.data.model.TaskFilter
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FilterMenu(
-    selected: TaskFilter,
-    onSelected: (TaskFilter) -> Unit
+    filters: List<String>,
+    selected: String,
+    onSelected: (String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    androidx.compose.material3.TextButton(
+        onClick = {
+            expanded = true
+        }
+    ) {
+        Text(selected)
+    }
+
+    DropdownMenu(
         expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
+        onDismissRequest = {
+            expanded = false
         }
     ) {
 
-        OutlinedTextField(
-            value = selected.name,
-            onValueChange = {},
-            readOnly = true,
-            label = { Text("Filter") }
-        )
+        filters.forEach { filter ->
 
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-
-            TaskFilter.entries.forEach { filter ->
-
-                DropdownMenuItem(
-                    text = {
-                        Text(filter.name)
-                    },
-                    onClick = {
-                        expanded = false
-                        onSelected(filter)
-                    }
-                )
-            }
+            DropdownMenuItem(
+                text = {
+                    Text(filter)
+                },
+                onClick = {
+                    expanded = false
+                    onSelected(filter)
+                }
+            )
         }
     }
 }

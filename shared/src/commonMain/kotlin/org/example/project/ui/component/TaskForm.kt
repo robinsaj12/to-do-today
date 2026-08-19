@@ -1,7 +1,10 @@
 package org.example.project.ui.component
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -11,10 +14,10 @@ import org.example.project.data.model.Priority
 fun TaskForm(
     title: String,
     description: String,
-    priority: Priority,
-    onTitleChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onPriorityChanged: (Priority) -> Unit
+    selectedPriority: Priority,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onPrioritySelected: (Priority) -> Unit
 ) {
 
     Column(
@@ -23,21 +26,31 @@ fun TaskForm(
 
         OutlinedTextField(
             value = title,
-            onValueChange = onTitleChanged,
-            label = { androidx.compose.material3.Text("Title") },
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = onTitleChange,
+            label = {
+                Text("Title")
+            },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         OutlinedTextField(
             value = description,
-            onValueChange = onDescriptionChanged,
-            label = { androidx.compose.material3.Text("Description") },
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = onDescriptionChange,
+            label = {
+                Text("Description")
+            },
+            modifier = Modifier.fillMaxWidth(),
+            minLines = 3
+        )
+
+        Text(
+            text = "Priority"
         )
 
         PrioritySelector(
-            selected = priority,
-            onPrioritySelected = onPriorityChanged
+            selectedPriority = selectedPriority,
+            onPrioritySelected = onPrioritySelected
         )
     }
 }
