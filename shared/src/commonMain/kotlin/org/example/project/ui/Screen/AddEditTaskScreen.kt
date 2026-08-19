@@ -26,14 +26,20 @@ fun AddEditTaskScreen(
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onPrioritySelected: (Priority) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
+    isEditing: Boolean,
 ) {
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Add Task")
+                    Text(
+                        if (isEditing)
+                            "Edit Task"
+                        else
+                            "Add Task"
+                    )
                 }
             )
         }

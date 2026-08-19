@@ -52,7 +52,8 @@ fun AppNavigation() {
                 onPrioritySelected = {},
                 onSaveClick = {
                     navController.popBackStack()
-                }
+                },
+                isEditing=true,
             )
         }
     }

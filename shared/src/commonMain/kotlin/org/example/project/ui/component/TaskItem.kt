@@ -12,12 +12,14 @@ import org.example.project.data.model.Task
 @Composable
 fun TaskItem(
     task: Task,
+    onClick: () -> Unit,
     onToggleComplete: () -> Unit,
     onDelete: () -> Unit
 ) {
 
     ElevatedCard(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick
     ) {
 
         Row(

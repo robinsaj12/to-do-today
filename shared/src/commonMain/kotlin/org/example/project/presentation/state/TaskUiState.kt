@@ -12,5 +12,7 @@ data class TaskUiState(
 
     val description: String = "",
 
-    val priority: Priority = Priority.MEDIUM
+    val priority: Priority = Priority.MEDIUM,
+
+    val editingTaskId: Long? = null
 )

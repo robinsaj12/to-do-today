@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import org.example.project.data.repository.TaskRepository
 import org.example.project.presentation.event.TaskEvent
 import org.example.project.presentation.state.TaskUiState
+import org.example.project.data.model.Task
 
 class TaskViewModel(
     private val repository: TaskRepository
@@ -95,6 +96,57 @@ class TaskViewModel(
                     it.copy(
                         priority = event.priority
                     )
+                }
+            }
+            is TaskEvent.SelectTask -> {
+
+                _uiState.update {
+                    it.copy(
+                        editingTaskId = event.task.id,
+                        title = event.task.title,
+                        description = event.task.description,
+                        priority = event.task.priority
+                    )
+                }
+            }
+            TaskEvent.SaveTask -> {
+
+                val state = _uiState.value
+
+                if (state.title.isBlank()) return
+
+                viewModelScope.launch {
+
+                    if (state.editingTaskId == null) {
+
+                        repository.insertTask(
+                            Task(
+                                title = state.title,
+                                description = state.description,
+                                priority = state.priority
+                            )
+                        )
+
+                    } else {
+
+                        repository.updateTask(
+                            Task(
+                                id = state.editingTaskId,
+                                title = state.title,
+                                description = state.description,
+                                priority = state.priority
+                            )
+                        )
+                    }
+
+                    _uiState.update {
+                        it.copy(
+                            title = "",
+                            description = "",
+                            priority = org.example.project.data.model.Priority.MEDIUM,
+                            editingTaskId = null
+                        )
+                    }
                 }
             }
         }

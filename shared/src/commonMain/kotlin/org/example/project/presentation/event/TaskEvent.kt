@@ -32,4 +32,9 @@ sealed interface TaskEvent {
     data class PriorityChanged(
         val priority: Priority
     ) : TaskEvent
+    data class SelectTask(
+        val task: Task
+    ) : TaskEvent
+
+    data object SaveTask : TaskEvent
 }

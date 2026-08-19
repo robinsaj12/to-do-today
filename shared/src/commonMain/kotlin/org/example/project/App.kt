@@ -44,6 +44,7 @@ fun App(
                     title = uiState.title,
                     description = uiState.description,
                     priority = uiState.priority,
+                    isEditing = uiState.editingTaskId != null,
 
                     onTitleChange = {
                         viewModel.onEvent(
@@ -65,18 +66,13 @@ fun App(
 
                     onSaveClick = {
 
-                        val task = Task(
-                            title = uiState.title,
-                            description = uiState.description,
-                            priority = uiState.priority
-                        )
-
                         viewModel.onEvent(
-                            TaskEvent.AddTask(task)
+                            TaskEvent.SaveTask
                         )
 
                         currentScreen = Screen.LIST
                     }
+
                 )
             }
         }

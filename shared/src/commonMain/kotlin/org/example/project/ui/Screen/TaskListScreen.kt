@@ -57,11 +57,22 @@ fun TaskListScreen(
 
                     TaskItem(
                         task = task,
+
+                        onClick = {
+
+                            viewModel.onEvent(
+                                TaskEvent.SelectTask(task)
+                            )
+
+                            onAddTaskClick()
+                        },
+
                         onToggleComplete = {
                             viewModel.onEvent(
                                 TaskEvent.ToggleComplete(task)
                             )
                         },
+
                         onDelete = {
                             viewModel.onEvent(
                                 TaskEvent.DeleteTask(task)
