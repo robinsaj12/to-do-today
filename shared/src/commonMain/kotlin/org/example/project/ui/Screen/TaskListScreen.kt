@@ -24,6 +24,7 @@ import org.example.project.ui.component.EmptyState
 import org.example.project.ui.component.SearchBar
 import org.example.project.ui.component.TaskItem
 import org.example.project.ui.component.FilterMenu
+import org.example.project.ui.component.SortMenu
 
 @Composable
 fun TaskListScreen(
@@ -62,6 +63,14 @@ fun TaskListScreen(
                     onSelected = {
                         viewModel.onEvent(
                             TaskEvent.FilterChanged(it)
+                        )
+                    }
+                )
+                SortMenu(
+                    selected = state.selectedSort,
+                    onSelected = {
+                        viewModel.onEvent(
+                            TaskEvent.SortChanged(it)
                         )
                     }
                 )
@@ -112,6 +121,8 @@ fun TaskListScreen(
                         }
                     }
 
-                }}            }
+                }
+            }
+    }
 
 }

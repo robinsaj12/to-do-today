@@ -12,10 +12,49 @@ import org.example.project.presentation.event.TaskEvent
 import org.example.project.presentation.state.TaskUiState
 import org.example.project.data.model.Task
 import org.example.project.data.model.TaskFilter
+import org.example.project.data.model.TaskSort
+import org.example.project.data.model.Priority
 
 class TaskViewModel(
     private val repository: TaskRepository
 ) : ViewModel() {
+
+    private fun applySorting(
+        tasks: List<Task>,
+        sort: TaskSort
+    ): List<Task> {
+
+        return when (sort) {
+
+            TaskSort.NEWEST ->
+                tasks.sortedByDescending {
+                    it.createdAt
+                }
+
+            TaskSort.OLDEST ->
+                tasks.sortedBy {
+                    it.createdAt
+                }
+
+            TaskSort.HIGH_PRIORITY ->
+                tasks.sortedBy {
+                    when (it.priority) {
+                        Priority.HIGH -> 0
+                        Priority.MEDIUM -> 1
+                        Priority.LOW -> 2
+                    }
+                }
+
+            TaskSort.LOW_PRIORITY ->
+                tasks.sortedBy {
+                    when (it.priority) {
+                        Priority.LOW -> 0
+                        Priority.MEDIUM -> 1
+                        Priority.HIGH -> 2
+                    }
+                }
+        }
+    }
 
     private fun applyFilters(
         tasks: List<Task>,
@@ -67,7 +106,10 @@ class TaskViewModel(
                 }
         }
 
-        return result
+        return applySorting(
+            result,
+            _uiState.value.selectedSort
+        )
     }
 
     private var allTasks: List<Task> = emptyList()
@@ -274,6 +316,23 @@ private fun observeTasks() {
                             allTasks,
                             it.searchQuery,
                             event.filter
+                        )
+                    )
+                }
+            }
+
+            is TaskEvent.SortChanged -> {
+
+                _uiState.update {
+                    it.copy(
+                        selectedSort = event.sort,
+                        tasks = applySorting(
+                            applyFilters(
+                                allTasks,
+                                it.searchQuery,
+                                it.selectedFilter
+                            ),
+                            event.sort
                         )
                     )
                 }

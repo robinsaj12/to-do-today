@@ -3,6 +3,7 @@ package org.example.project.presentation.state
 import org.example.project.data.model.Priority
 import org.example.project.data.model.Task
 import org.example.project.data.model.TaskFilter
+import org.example.project.data.model.TaskSort
 
 data class TaskUiState(
     val tasks: List<Task> = emptyList(),
@@ -18,6 +19,7 @@ data class TaskUiState(
     val editingTaskId: Long? = null,
 
     val searchQuery: String = "",
-    val selectedFilter: TaskFilter = TaskFilter.ALL
+    val selectedFilter: TaskFilter = TaskFilter.ALL,
+    val selectedSort: TaskSort = TaskSort.NEWEST
 
 )
